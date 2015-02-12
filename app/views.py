@@ -5,7 +5,7 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 
 This file creates your application.
 """
-
+import smtplib
 from app import app
 from flask import render_template, request, redirect, url_for
 
@@ -53,6 +53,17 @@ def page_not_found(error):
     """Custom 404 page."""
     return render_template('404.html'), 404
 
+@app.route('/contact/', methods=["POST","GET"])
+def contact():
+    """Render the website's contact page."""
+    if request.method == "POST":
+      name = request.form["name"]
+      email = request.form["email"]
+      subject = request.form["subject"]
+      message = request.form["message"]
+      if sendmail(fromname=name,fromaddr=email,subject=subject,msg=message):
+        return render_template("contact.html",status="mail sent")
+    return render_template('contact.html')
 
 if __name__ == '__main__':
-    app.run(debug=True,host="0.0.0.0",port="8888")
+    app.run(debug=True,host="0.0.0.0",port="8080")
